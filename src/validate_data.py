@@ -126,5 +126,5 @@ with engine.connect() as conn:
     print(df.to_string(index=False))
 
 print("\n" + "=" * 60)
-print("✅ Validation complete.")
+print("Validation complete.")
 print("=" * 60)

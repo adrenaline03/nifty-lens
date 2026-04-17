@@ -34,7 +34,7 @@ index_data = yf.download(
 )
 
 if index_data.empty:
-    raise RuntimeError("❌ yfinance returned empty data for ^NSEI. Try again in a minute.")
+    raise RuntimeError("yfinance returned empty data for ^NSEI. Try again in a minute.")
 
 # yfinance returns MultiIndex columns when auto_adjust=False; flatten them
 if isinstance(index_data.columns, pd.MultiIndex):

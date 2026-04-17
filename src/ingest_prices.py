@@ -47,7 +47,7 @@ def fetch_ticker_data(ticker: str) -> pd.DataFrame | None:
             if df.empty:
                 if attempt < MAX_RETRIES:
                     wait = RETRY_DELAY * (2 ** (attempt - 1))
-                    print(f"    Empty response, retry {attempt}/{MAX_RETRIES} in {wait}s...")
+                    print(f"Empty response, retry {attempt}/{MAX_RETRIES} in {wait}s...")
                     time.sleep(wait)
                     continue
                 return None
@@ -63,7 +63,7 @@ def fetch_ticker_data(ticker: str) -> pd.DataFrame | None:
             expected = ["date", "open", "high", "low", "close", "volume"]
             missing = [c for c in expected if c not in df.columns]
             if missing:
-                print(f"    ⚠️  Missing columns {missing}. Got: {list(df.columns)}")
+                print(f"Missing columns {missing}. Got: {list(df.columns)}")
                 return None
 
             df = df[expected].copy()
@@ -82,10 +82,10 @@ def fetch_ticker_data(ticker: str) -> pd.DataFrame | None:
         except Exception as e:
             if attempt < MAX_RETRIES:
                 wait = RETRY_DELAY * (2 ** (attempt - 1))
-                print(f"    ❌ Error: {e} — retry {attempt}/{MAX_RETRIES} in {wait}s...")
+                print(f"Error: {e} — retry {attempt}/{MAX_RETRIES} in {wait}s...")
                 time.sleep(wait)
             else:
-                print(f"    ❌ Final failure: {e}")
+                print(f"Final failure: {e}")
                 return None
 
     return None
@@ -110,7 +110,7 @@ def main():
         df = fetch_ticker_data(ticker)
 
         if df is None or df.empty:
-            print("❌ FAILED")
+            print("FAILED")
             failed_tickers.append(ticker)
             continue
 
@@ -130,10 +130,10 @@ def main():
             latest = df["date"].max()
             total_rows += rows
             success_tickers.append(ticker)
-            print(f"✅ {rows:4d} rows ({earliest} → {latest})")
+            print(f"{rows:4d} rows ({earliest} → {latest})")
         except Exception as e:
             err_msg = str(e).split('\n')[0][:150]
-            print(f"❌ DB INSERT FAILED: {type(e).__name__}: {err_msg}")
+            print(f"DB INSERT FAILED: {type(e).__name__}: {err_msg}")
             failed_tickers.append(ticker)
 
         time.sleep(0.5)
@@ -141,13 +141,13 @@ def main():
     print("\n" + "=" * 60)
     print("INGESTION SUMMARY")
     print("=" * 60)
-    print(f"✅ Succeeded: {len(success_tickers)}/50 tickers, {total_rows:,} total rows")
+    print(f"Succeeded: {len(success_tickers)}/50 tickers, {total_rows:,} total rows")
 
     if failed_tickers:
-        print(f"❌ Failed:    {len(failed_tickers)} — {failed_tickers}")
+        print(f"Failed:    {len(failed_tickers)} — {failed_tickers}")
         print("\nRe-run the script to retry failed tickers.")
     else:
-        print("🎉 All 50 tickers ingested successfully.")
+        print("All 50 tickers ingested successfully.")
 
 
 if __name__ == "__main__":
