@@ -21,3 +21,4 @@ models/*.pkl
 
 # Streamlit secrets (never commit)
 .streamlit/secrets.toml
+.ipynb_checkpoints/

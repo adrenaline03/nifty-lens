@@ -10,8 +10,8 @@ End-to-end analytics platform tracking 5 years of NIFTY 50 data — built with P
 
 - [x] Day 0: Infrastructure setup
 - [x] Day 1: Data ingestion (50 NIFTY 50 constituents, ~61,400 rows of OHLCV data)
-- [x] Day 2: SQL analytical layer (2 views, 3 materialized views, 2 stored functions)
-- [ ] Day 3: ML feature engineering
+- [x] Day 2: SQL analytical layer (2 views, 4 materialized views, 2 stored functions)
+- [x] Day 3: ML feature engineering (12 features, 59,763 rows, volatility regime target)
 - [ ] Day 4: Model training (XGBoost volatility classifier)
 - [ ] Day 5: Predictions and integration
 - [ ] Day 6-8: Streamlit app + Power BI dashboard
@@ -23,36 +23,43 @@ End-to-end analytics platform tracking 5 years of NIFTY 50 data — built with P
 - **Database:** PostgreSQL (Neon)
 - **Data ingestion:** Python, yfinance, SQLAlchemy
 - **Analytics layer:** SQL views + materialized views + pl/pgsql functions
-- **ML (coming):** XGBoost volatility regime classifier
+- **ML feature engineering:** Python, pandas, `ta` library (technical indicators)
+- **ML model (coming):** XGBoost volatility regime classifier
 - **Dashboard (coming):** Streamlit + Power BI
 
-## Analytics Layer (Day 2)
+## ML Feature Layer (Day 3)
 
-The SQL analytics layer computes returns, risk metrics, and portfolio analytics
-server-side, so the dashboard and ML layer can query pre-computed results.
+Built on top of `prices_daily`, the `ml_features` table contains 12 engineered
+features per (ticker, date) pair plus a target variable:
 
-**Views:**
+**Price-based features:**
 
-- `returns_daily` — daily log and simple returns per ticker
-- `returns_monthly` — month-end returns per ticker
+- Lagged returns: `ret_1d`, `ret_5d`, `ret_20d` (momentum signals)
+- Bollinger Band width: `bb_width` (normalized to price)
 
-**Materialized views:**
+**Volatility features:**
 
-- `rolling_volatility` — 20-day and 60-day annualized volatility
-- `rolling_sharpe` — 60-day rolling annualized Sharpe ratio
-- `drawdown_daily` — running max price and current drawdown
-- `correlation_matrix` — pairwise correlations over trailing 252 days
+- Realized vol: `vol_5d`, `vol_20d` (annualized)
+- ATR-14: `atr_14` (normalized to price)
 
-**Functions (stored procedures):**
+**Momentum features:**
 
-- `sp_portfolio_metrics(tickers[], weights[], start, end)` — portfolio return, vol, Sharpe, max drawdown
-- `sp_sector_exposure(tickers[], weights[])` — sector breakdown of a portfolio
+- RSI-14: `rsi_14`
+- MACD & signal: `macd`, `macd_signal`, `macd_diff`
 
-Standard assumptions: 252 trading days/year, 6.5% annualized risk-free rate (Indian 10yr G-Sec).
+**Volume:**
+
+- `volume_ratio` (today / 20-day avg)
+
+**Target:** `regime` — next-day volatility bucket (low / medium / high) via
+per-ticker historical tertile split. Near-perfect class balance (~33% each).
+
+See `notebooks/01_eda.ipynb` for feature distributions, class balance, and regime
+separation analysis.
 
 ## Data Scope
 
-- 49 full-history NIFTY 50 constituents (5 years of daily OHLCV)
-- 1 partial-history stock: **TMPV.NS** (post-October 2025 demerger)
-- 1 partial-history stock: **ETERNAL.NS** (formerly Zomato, IPO July 2021)
+- 49 full-history NIFTY 50 constituents (5 years of daily OHLCV + features)
+- TMPV.NS: partial history (post-October 2025 demerger)
+- ETERNAL.NS: partial history (Zomato IPO July 2021)
 - NIFTY 50 index (5 years)
