@@ -12,8 +12,8 @@ End-to-end analytics platform tracking 5 years of NIFTY 50 data — built with P
 - [x] Day 1: Data ingestion (50 NIFTY 50 constituents, ~61,400 rows of OHLCV data)
 - [x] Day 2: SQL analytical layer (2 views, 4 materialized views, 2 stored functions)
 - [x] Day 3: ML feature engineering (12 features, 59,763 rows, volatility regime target)
-- [ ] Day 4: Model training (XGBoost volatility classifier)
-- [ ] Day 5: Predictions and integration
+- [x] Day 4: XGBoost classifier — 67.80% accuracy, 85.95% at high-confidence tier
+- [ ] Day 5: Predictions integration + model-drift SQL views
 - [ ] Day 6-8: Streamlit app + Power BI dashboard
 - [ ] Day 9: Deployment
 - [ ] Day 10-14: Polish, writeup, launch
@@ -23,39 +23,40 @@ End-to-end analytics platform tracking 5 years of NIFTY 50 data — built with P
 - **Database:** PostgreSQL (Neon)
 - **Data ingestion:** Python, yfinance, SQLAlchemy
 - **Analytics layer:** SQL views + materialized views + pl/pgsql functions
-- **ML feature engineering:** Python, pandas, `ta` library (technical indicators)
-- **ML model (coming):** XGBoost volatility regime classifier
+- **ML feature engineering:** Python, pandas, `ta` library
+- **ML model:** XGBoost classifier with time-series cross-validation
 - **Dashboard (coming):** Streamlit + Power BI
 
-## ML Feature Layer (Day 3)
+## ML Model (Day 4)
 
-Built on top of `prices_daily`, the `ml_features` table contains 12 engineered
-features per (ticker, date) pair plus a target variable:
+Volatility regime classifier trained on 12 engineered features across 50 tickers and 5
+years of daily data.
 
-**Price-based features:**
+**Target:** Next-5-day average realized volatility bucket (low / medium / high) via
+per-ticker tertile split.
 
-- Lagged returns: `ret_1d`, `ret_5d`, `ret_20d` (momentum signals)
-- Bollinger Band width: `bb_width` (normalized to price)
+**Key design decisions:**
 
-**Volatility features:**
+- **Target choice matters more than model.** Initial next-day target yielded 39%
+  accuracy (barely above random). Reframing to next-5-day average — aligned with
+  well-documented volatility clustering — moved accuracy to 68%. A single-line change.
+- **Time-based train/test split** (no shuffling). Walk-forward CV using
+  `TimeSeriesSplit`. Final split: 4 years train → 1 year test.
+- **Two-model comparison.** XGBoost (67.8%) slightly beats Logistic Regression (65.8%)
+  — a healthy margin given our features are already well-engineered for monotonic
+  relationships.
 
-- Realized vol: `vol_5d`, `vol_20d` (annualized)
-- ATR-14: `atr_14` (normalized to price)
+**Results (test set, 12,092 predictions):**
 
-**Momentum features:**
+- Overall accuracy: **67.80%**
+- High-confidence tier (>70% confidence): **85.95%** across 4,874 predictions
+- Per-class recall: 70% low, 58% medium, 76% high
+- Top feature: `vol_5d` at 52% of total importance — model independently learned
+  volatility clustering
+- Hyperparameter sanity check: 7 configurations tested, all within 0.5pp of default
 
-- RSI-14: `rsi_14`
-- MACD & signal: `macd`, `macd_signal`, `macd_diff`
-
-**Volume:**
-
-- `volume_ratio` (today / 20-day avg)
-
-**Target:** `regime` — next-day volatility bucket (low / medium / high) via
-per-ticker historical tertile split. Near-perfect class balance (~33% each).
-
-See `notebooks/01_eda.ipynb` for feature distributions, class balance, and regime
-separation analysis.
+See `notebooks/02_model_training.ipynb` for full analysis including calibration plots,
+feature importance, and accuracy-over-time stability.
 
 ## Data Scope
 

@@ -103,7 +103,9 @@ def compute_features(df: pd.DataFrame, ticker: str) -> pd.DataFrame:
 
   # Target: next-day realized volatility proxy
   # Using |log return| as proxy for volatility magnitude
-  df["abs_return_next"] = df["log_return"].shift(-1).abs()
+  df["abs_return_next"] = (
+    df["log_return"].abs().shift(-1).rolling(5).mean()
+)
 
   # Regime label: tertile within this ticker's history
   # Drop NaN before computing quantiles
