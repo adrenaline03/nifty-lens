@@ -13,7 +13,7 @@ End-to-end analytics platform tracking 5 years of NIFTY 50 data — built with P
 - [x] Day 2: SQL analytical layer (2 views, 4 materialized views, 2 stored functions)
 - [x] Day 3: ML feature engineering (12 features, 59,763 rows, volatility regime target)
 - [x] Day 4: XGBoost classifier — 67.80% accuracy, 85.95% at high-confidence tier
-- [ ] Day 5: Predictions integration + model-drift SQL views
+- [x] Day 5: Predictions integration, dashboard-ready views, refresh pipeline
 - [ ] Day 6-8: Streamlit app + Power BI dashboard
 - [ ] Day 9: Deployment
 - [ ] Day 10-14: Polish, writeup, launch
@@ -25,38 +25,25 @@ End-to-end analytics platform tracking 5 years of NIFTY 50 data — built with P
 - **Analytics layer:** SQL views + materialized views + pl/pgsql functions
 - **ML feature engineering:** Python, pandas, `ta` library
 - **ML model:** XGBoost classifier with time-series cross-validation
+- **Orchestration:** Python refresh pipeline (`scripts/refresh_pipeline.py`)
 - **Dashboard (coming):** Streamlit + Power BI
 
-## ML Model (Day 4)
+## Refresh Pipeline
 
-Volatility regime classifier trained on 12 engineered features across 50 tickers and 5
-years of daily data.
+Running `python scripts/refresh_pipeline.py` re-runs the entire data-to-predictions
+pipeline end-to-end: ingests latest prices from yfinance, refreshes all materialized
+views, recomputes ML features, and regenerates predictions. Useful flags:
 
-**Target:** Next-5-day average realized volatility bucket (low / medium / high) via
-per-ticker tertile split.
+- `--skip-ingest`: skip data ingestion (use existing Postgres data)
+- `--skip-ml`: skip feature/prediction rebuild
 
-**Key design decisions:**
+## Highlights
 
-- **Target choice matters more than model.** Initial next-day target yielded 39%
-  accuracy (barely above random). Reframing to next-5-day average — aligned with
-  well-documented volatility clustering — moved accuracy to 68%. A single-line change.
-- **Time-based train/test split** (no shuffling). Walk-forward CV using
-  `TimeSeriesSplit`. Final split: 4 years train → 1 year test.
-- **Two-model comparison.** XGBoost (67.8%) slightly beats Logistic Regression (65.8%)
-  — a healthy margin given our features are already well-engineered for monotonic
-  relationships.
-
-**Results (test set, 12,092 predictions):**
-
-- Overall accuracy: **67.80%**
-- High-confidence tier (>70% confidence): **85.95%** across 4,874 predictions
-- Per-class recall: 70% low, 58% medium, 76% high
-- Top feature: `vol_5d` at 52% of total importance — model independently learned
-  volatility clustering
-- Hyperparameter sanity check: 7 configurations tested, all within 0.5pp of default
-
-See `notebooks/02_model_training.ipynb` for full analysis including calibration plots,
-feature importance, and accuracy-over-time stability.
+- **67.80% test accuracy** on 3-class volatility regime classification (33% random baseline)
+- **85.95% accuracy** on high-confidence predictions (>70% confidence, 40% of test set)
+- **Well-calibrated classifier**: predicted probabilities match real accuracy across confidence tiers
+- **Volatility clustering recovered independently**: `vol_5d` carries 52% of feature importance
+- **16pp sector-accuracy spread**: model is differentially skilled (Utilities 74% vs Consumer Discretionary 58%)
 
 ## Data Scope
 
@@ -64,3 +51,10 @@ feature importance, and accuracy-over-time stability.
 - TMPV.NS: partial history (post-October 2025 demerger)
 - ETERNAL.NS: partial history (Zomato IPO July 2021)
 - NIFTY 50 index (5 years)
+
+## Assumptions
+
+- 252 trading days per year
+- 6.5% annualized risk-free rate (Indian 10-year G-Sec)
+- Per-ticker volatility tertiles (low/medium/high regime boundaries are ticker-specific)
+- Adjusted close prices for all return calculations
