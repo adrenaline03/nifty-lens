@@ -14,9 +14,11 @@ End-to-end analytics platform tracking 5 years of NIFTY 50 data — built with P
 - [x] Day 3: ML feature engineering (12 features, 59,763 rows, volatility regime target)
 - [x] Day 4: XGBoost classifier — 67.80% accuracy, 85.95% at high-confidence tier
 - [x] Day 5: Predictions integration, dashboard-ready views, refresh pipeline
-- [ ] Day 6-8: Streamlit app + Power BI dashboard
-- [ ] Day 9: Deployment
-- [ ] Day 10-14: Polish, writeup, launch
+- [x] Day 6: Streamlit app scaffolded, Market Overview + Stock Deep-Dive pages live
+- [ ] Day 7: Portfolio Analyzer + Volatility Predictions pages
+- [ ] Day 8: Power BI dashboard (complement artifact) + Streamlit polish
+- [ ] Day 9: Deployment to Streamlit Cloud
+- [ ] Day 10-14: README polish, writeup, launch
 
 ## Tech Stack
 
@@ -36,6 +38,23 @@ views, recomputes ML features, and regenerates predictions. Useful flags:
 
 - `--skip-ingest`: skip data ingestion (use existing Postgres data)
 - `--skip-ml`: skip feature/prediction rebuild
+
+## Dashboard
+
+Interactive dashboard built with Streamlit + Plotly, querying the Postgres
+analytics layer in real time.
+
+**Pages (live):**
+
+- **Market Overview** — NIFTY 50 index history, sector YTD heatmap, top gainers/losers (selectable time period)
+- **Stock Deep-Dive** — ticker-level price chart with 50/200 DMA, rolling volatility, drawdown underwater plot, key metrics panel
+
+**Pages (coming):**
+
+- Portfolio Analyzer — user-defined portfolios with metrics & sector exposure
+- Volatility Predictions — model output visualization & accuracy tracking
+
+Run locally: `streamlit run streamlit_app/app.py`
 
 ## Highlights
 

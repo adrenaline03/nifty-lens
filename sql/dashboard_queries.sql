@@ -20,7 +20,7 @@
 -- Returns NIFTY 50 index close prices for the last N years.
 -- PARAMS: :years_back (int, default 5)
 SELECT date, close
-FROM nifty_history
+FROM nifty_index
 WHERE date >= CURRENT_DATE - (:years_back * INTERVAL '1 year')
 ORDER BY date;
 
