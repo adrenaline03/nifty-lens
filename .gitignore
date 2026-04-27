@@ -23,3 +23,7 @@ Thumbs.db
 .ipynb_checkpoints/
 
 models/*.pkl
+
+# Streamlit secrets (never commit real credentials)
+.streamlit/secrets.toml
+streamlit_app/.streamlit/secrets.toml

@@ -5,6 +5,7 @@ This is the "home" page. Streamlit auto-detects pages/ folder and
 creates sidebar navigation.
 """
 import streamlit as st
+from utils.styling import inject_css, render_sidebar_header
 
 st.set_page_config(
   page_title="Nifty-Lens",
@@ -12,6 +13,8 @@ st.set_page_config(
   layout="wide",
   initial_sidebar_state="expanded",
 )
+inject_css()
+render_sidebar_header()
 
 # Hero
 st.title("Nifty-Lens")

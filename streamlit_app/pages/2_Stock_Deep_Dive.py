@@ -13,6 +13,7 @@ from plotly.subplots import make_subplots
 
 from utils.db import run_query
 from utils.queries import get_query
+from utils.styling import inject_css, render_sidebar_header
 
 
 st.set_page_config(
@@ -20,6 +21,8 @@ st.set_page_config(
     page_icon="🔍",
     layout="wide",
 )
+inject_css()
+render_sidebar_header()
 
 st.title("🔍 Stock Deep-Dive")
 st.caption("Interactive analysis of any NIFTY 50 constituent — price, volatility, drawdown.")

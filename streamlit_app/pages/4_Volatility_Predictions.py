@@ -15,12 +15,15 @@ import plotly.graph_objects as go
 
 from utils.db import run_query
 from utils.queries import get_query
+from utils.styling import inject_css, render_sidebar_header
 
 st.set_page_config(
     page_title="Volatility Predictions | Nifty-Lens",
     page_icon="🔮",
     layout="wide",
 )
+inject_css()
+render_sidebar_header()
 
 st.title("🔮 Volatility Regime Predictions")
 st.caption(
