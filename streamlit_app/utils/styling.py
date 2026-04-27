@@ -99,5 +99,5 @@ def render_footer():
   st.caption(
     "[GitHub](https://github.com/adrenaline03/nifty-lens) · "
     "[LinkedIn](https://www.linkedin.com/in/nalin-singhal-553b6a24a/) · "
-    "Portfolio project — not investment advice."
+    "Portfolio project, not investment advice."
   )
