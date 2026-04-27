@@ -1,18 +1,18 @@
 ﻿# Core data + DB
-pandas==2.3.4
-numpy==2.3.4
-sqlalchemy==2.0.46
-psycopg2-binary==2.9.13
-python-dotenv==1.2.0
+pandas
+numpy
+sqlalchemy
+psycopg2-binary
+python-dotenv
 
 # Streamlit + viz
-streamlit==1.52.0
-plotly==6.5.1
+streamlit
+plotly
 
 # ML
-scikit-learn==1.7.5
-xgboost==3.2.0
-ta==0.11.0
+scikit-learn
+xgboost
+ta
 
 # Data ingestion
-yfinance==1.3.0
+yfinance
