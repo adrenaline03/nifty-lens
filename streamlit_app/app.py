@@ -45,8 +45,16 @@ with col4:
   st.metric("High-confidence accuracy", "85.9%")
 
 st.markdown("---")
-st.caption(
-  "Data via yfinance. Prices are split/dividend adjusted. "
-  "Volatility regime predictions from an XGBoost classifier trained on 12 "
-  "engineered features. This is a portfolio project — not investment advice."
-)
+
+footer_col1, footer_col2 = st.columns([3, 1])
+with footer_col1:
+    st.caption(
+        "Data via yfinance, split/dividend adjusted. "
+        "Volatility regime predictions from an XGBoost classifier trained on 12 engineered features. "
+        "**This is a portfolio project — not investment advice.**"
+    )
+with footer_col2:
+    st.caption(
+        "[GitHub](https://github.com/adrenaline03/nifty-lens) · "
+        "[LinkedIn](https://www.linkedin.com/in/nalin-singhal-553b6a24a/)"
+    )

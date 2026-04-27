@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 
 from utils.db import run_query
 from utils.queries import get_query
-from utils.styling import inject_css, render_sidebar_header
+from utils.styling import inject_css, render_sidebar_header, render_footer
 
 st.set_page_config(page_title="Market Overview | Nifty-Lens", page_icon="📊", layout="wide")
 inject_css()
@@ -217,3 +217,5 @@ with losers_col:
       },
       use_container_width=True,
   )
+
+render_footer()

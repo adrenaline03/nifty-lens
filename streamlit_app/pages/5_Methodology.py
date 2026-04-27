@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import streamlit as st
 
-from utils.styling import inject_css, render_sidebar_header
+from utils.styling import inject_css, render_sidebar_header, render_footer
 
 
 st.set_page_config(
@@ -211,3 +211,5 @@ st.caption(
     "Source code on GitHub: [github.com/adrenaline03/nifty-lens]"
     "(https://github.com/adrenaline03/nifty-lens)"
 )
+
+render_footer()

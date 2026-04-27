@@ -92,3 +92,12 @@ def render_sidebar_header():
   """Call at the top of every page (after inject_css) to brand the sidebar."""
   with st.sidebar:
     st.markdown(SIDEBAR_HTML, unsafe_allow_html=True)
+
+def render_footer():
+  """Compact footer shown at the bottom of every page."""
+  st.markdown("---")
+  st.caption(
+    "[GitHub](https://github.com/adrenaline03/nifty-lens) · "
+    "[LinkedIn](https://www.linkedin.com/in/nalin-singhal-553b6a24a/) · "
+    "Portfolio project — not investment advice."
+  )

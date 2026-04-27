@@ -13,7 +13,7 @@ from plotly.subplots import make_subplots
 
 from utils.db import run_query
 from utils.queries import get_query
-from utils.styling import inject_css, render_sidebar_header
+from utils.styling import inject_css, render_sidebar_header, render_footer
 
 
 st.set_page_config(
@@ -223,3 +223,5 @@ st.caption(
   "Measures peak-to-trough decline. The 'underwater curve' shape is a standard "
   "risk visualization."
 )
+
+render_footer()
