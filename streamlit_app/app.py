@@ -47,11 +47,13 @@ with col4:
 st.markdown("---")
 
 st.caption(
-    "Data via yfinance, split/dividend adjusted. "
-    "Volatility regime predictions from an XGBoost classifier trained on 12 engineered features. "
-    "**This is a portfolio project — not investment advice.**"
+  "Data via yfinance, split/dividend adjusted. "
+  "Volatility regime predictions from an XGBoost classifier trained on 12 engineered features. "
 )
 st.caption(
-    "[GitHub](https://github.com/adrenaline03/nifty-lens) · "
-    "[LinkedIn](https://www.linkedin.com/in/nalin-singhal-553b6a24a/)"
+  "**This is a portfolio project, not investment advice.**"
+)
+st.caption(
+  "[GitHub](https://github.com/adrenaline03/nifty-lens) · "
+  "[LinkedIn](https://www.linkedin.com/in/nalin-singhal-553b6a24a/)"
 )
