@@ -89,9 +89,12 @@ def inject_css():
   st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 def render_sidebar_header():
-  """Call at the top of every page (after inject_css) to brand the sidebar."""
-  with st.sidebar:
-    st.markdown(SIDEBAR_HTML, unsafe_allow_html=True)
+    """Sidebar branding + global refresh button. Called from every page."""
+    with st.sidebar:
+        st.markdown(SIDEBAR_HTML, unsafe_allow_html=True)
+        if st.button("🔄 Refresh data", use_container_width=True):
+            st.cache_data.clear()
+            st.rerun()
 
 def render_footer():
   """Compact footer shown at the bottom of every page."""
