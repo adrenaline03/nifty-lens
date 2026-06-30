@@ -1,8 +1,8 @@
-﻿# 📈 Nifty-Lens
+﻿# Nifty-Lens
 
 Volatility intelligence and portfolio analytics for NIFTY 50 equities.
 
-🔗 **[Try it live →](https://nifty-lens.streamlit.app)**
+**[Try it live →](https://nifty-lens.streamlit.app)**
 
 An end-to-end analytics platform: PostgreSQL backend with materialized views and stored procedures, an XGBoost classifier predicting next-5-day volatility regimes, and a Streamlit dashboard wiring it all together. Five years of daily NIFTY 50 data, 67.8% model accuracy on a 3-class classification problem (33% random baseline), and 86% accuracy on the high-confidence subset.
 
@@ -50,7 +50,7 @@ This aligns with the well-documented _volatility clustering_ phenomenon in finan
 
 ---
 
-## Calibration matters more than headline accuracy
+## Calibration vs accuracy
 
 The classifier is well-calibrated: when it reports >70% confidence, it's right 86% of the time across 4,874 test predictions (40% of the test set). Predictions in the 60-70% confidence band hit 63%, 50-60% hit 53%, and below 50% the model is essentially uncertain (49.8% accuracy on those — close to random for the cases the model itself flags as low-confidence).
 
@@ -79,9 +79,3 @@ streamlit run streamlit_app/app.py
 ```
 
 Or run individual stages — see `scripts/refresh_pipeline.py` for the order. Skip flags `--skip-ingest` and `--skip-ml` are available for partial reruns.
-
----
-
-## Disclaimer
-
-This is a portfolio project. It is not investment advice. All metrics use historical data; past performance does not predict future results. Transaction costs, slippage, and taxes are not modeled.
